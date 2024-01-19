@@ -16,7 +16,7 @@ export default function Teste({ params }: any) {
 
         const atualizar = dataLocal.dataAtualizacao ? `?dataAtualizacao=${dataLocal.dataAtualizacao}` : ""
 
-        const url = `http://localhost:3000/${rota}${atualizar}`
+        const url = `https://apianonypad.devlucas.online/${rota}${atualizar}`
 
         console.log(url)
 
@@ -41,7 +41,7 @@ export default function Teste({ params }: any) {
 
     const setDataPagina = async (conteudo: string) => {
 
-        const resposta: any = await fetch(`http://localhost:3000/${rota}`, {
+        const resposta: any = await fetch(`https://apianonypad.devlucas.online/${rota}`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
