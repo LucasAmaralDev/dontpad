@@ -1,12 +1,13 @@
 'use client';
 import { useEffect, useRef, useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function Teste({ params }: any) {
 
     const rota = params.item.join("/")
     const [conteudo, setConteudo] = useState("")
     const [ultimoConteudo, setUltimoConteudo] = useState<any>(null)
-
+    const toastId = 'salvando'
 
 
 
@@ -40,31 +41,53 @@ export default function Teste({ params }: any) {
     }
 
     const setDataPagina = async (conteudo: string) => {
+        try {
 
-        const resposta: any = await fetch(`https://apianonypad.devlucas.online/${rota}`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ conteudo })
-        })
-        const data = await resposta.json()
+            const resposta: any = await fetch(`https://apianonypad.devlucas.online/${rota}`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ conteudo })
+            })
+            const data = await resposta.json()
 
 
-        localStorage.setItem(`${rota}`, JSON.stringify({
-            dataAtualizacao: data.dataAtualizacao,
-            conteudo: data.conteudo
-        }))
+            localStorage.setItem(`${rota}`, JSON.stringify({
+                dataAtualizacao: data.dataAtualizacao,
+                conteudo: data.conteudo
+            }))
+
+            toast.success('Salvo com sucesso!', {
+                id: toastId,
+            })
+
+        } catch (error) {
+
+            toast.error('Erro ao salvar!', {
+                id: toastId,
+            })
+
+        }
+
     }
 
 
 
     useEffect(() => {
         let timer: any;
-
+        let timerToast: any;
         // Configura um temporizador para 3 segundos sempre que o userInput muda
 
         if (setUltimoConteudo === null) return
+
+        timerToast = setTimeout(() => {
+            toast.loading('Salvando...', {
+                id: toastId,
+                position: "top-right"
+            })
+        }
+            , 1000);
 
         setUltimoConteudo(conteudo)
         timer = setTimeout(() => {
@@ -73,7 +96,7 @@ export default function Teste({ params }: any) {
 
 
         // Limpa o temporizador ao desmontar o componente ou quando o userInput muda
-        return () => clearTimeout(timer);
+        return () => { clearTimeout(timer); clearTimeout(timerToast) };
     }, [conteudo]);
 
 
@@ -90,6 +113,7 @@ export default function Teste({ params }: any) {
                     height: "calc(99vh)"
                 }
             } value={conteudo} onChange={(e: any) => setConteudo(e.target.value)} ></textarea>
+            <Toaster />
         </>
     );
 }
