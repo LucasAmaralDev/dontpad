@@ -79,7 +79,9 @@ export default function Teste({ params }: any) {
         let timerToast: any;
         // Configura um temporizador para 3 segundos sempre que o userInput muda
 
+
         if (setUltimoConteudo === null) return
+        if (conteudo === ultimoConteudo) return
 
         timerToast = setTimeout(() => {
             toast.loading('Salvando...', {
